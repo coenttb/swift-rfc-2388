@@ -2,8 +2,6 @@
 @_exported import HTML_Form_Coder_Nested
 public import typealias HTML_Standard.HTML
 
-/// Compatibility spelling for the nested form-data model now owned by
-/// `swift-html-form-coder`.
 @available(*, deprecated, renamed: "HTML.Form.Coder.Nested.Data")
 public typealias FormData = HTML.Form.Coder.Nested.Data
 
