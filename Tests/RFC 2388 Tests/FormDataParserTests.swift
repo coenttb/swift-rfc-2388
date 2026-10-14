@@ -19,7 +19,7 @@ struct `FormData Parser Tests` {
 extension `FormData Parser Tests`.Unit {
     @Test
     func `Parse simple key-value pairs`() {
-        let result = FormData.parse("name=John&age=30")
+        let result = HTML.Form.Coder.Nested.Data.parse("name=John&age=30")
 
         guard case .dictionary(let dict) = result else {
             Issue.record("Expected dictionary")
@@ -32,7 +32,7 @@ extension `FormData Parser Tests`.Unit {
 
     @Test
     func `Parse arrays with brackets strategy`() {
-        let result = FormData.parse("tags[]=swift&tags[]=vapor", strategy: .brackets)
+        let result = HTML.Form.Coder.Nested.Data.parse("tags[]=swift&tags[]=vapor", strategy: .brackets)
 
         guard case .dictionary(let dict) = result,
             case .array(let tags) = dict["tags"]
@@ -48,7 +48,7 @@ extension `FormData Parser Tests`.Unit {
 
     @Test
     func `Parse arrays with indices`() {
-        let result = FormData.parse(
+        let result = HTML.Form.Coder.Nested.Data.parse(
             "items[0]=first&items[1]=second",
             strategy: .bracketsWithIndices
         )
@@ -67,7 +67,7 @@ extension `FormData Parser Tests`.Unit {
 
     @Test
     func `Parse with accumulate values strategy`() {
-        let result = FormData.parse("color=red&color=blue", strategy: .accumulateValues)
+        let result = HTML.Form.Coder.Nested.Data.parse("color=red&color=blue", strategy: .accumulateValues)
 
         guard case .dictionary(let dict) = result,
             case .array(let colors) = dict["color"]
@@ -83,7 +83,7 @@ extension `FormData Parser Tests`.Unit {
 
     @Test
     func `Parse nested objects`() {
-        let result = FormData.parse("user[name]=John&user[email]=john@example.com")
+        let result = HTML.Form.Coder.Nested.Data.parse("user[name]=John&user[email]=john@example.com")
 
         guard case .dictionary(let dict) = result,
             case .dictionary(let user) = dict["user"]
@@ -98,7 +98,7 @@ extension `FormData Parser Tests`.Unit {
 
     @Test
     func `Extract pairs from query string`() {
-        let pairs = FormData.extractPairs(from: "name=John&age=30")
+        let pairs = HTML.Form.Coder.Nested.Data.extractPairs(from: "name=John&age=30")
 
         #expect(pairs.count == 2)
         #expect(pairs[0].0 == "name")
@@ -109,7 +109,7 @@ extension `FormData Parser Tests`.Unit {
 
     @Test
     func `Handle percent-encoded values`() {
-        let result = FormData.parse("name=John+Doe&message=Hello%20World")
+        let result = HTML.Form.Coder.Nested.Data.parse("name=John+Doe&message=Hello%20World")
 
         guard case .dictionary(let dict) = result else {
             Issue.record("Expected dictionary")
@@ -130,40 +130,40 @@ extension `FormData Parser Tests`.Unit {
 
     @Test
     func `Trailing ampersand does not clobber parsed data`() {
-        let pairs = FormData.extractPairs(from: "name=Test&")
+        let pairs = HTML.Form.Coder.Nested.Data.extractPairs(from: "name=Test&")
         #expect(pairs.count == 1)
         #expect(pairs[0].0 == "name")
         #expect(pairs[0].1 == "Test")
 
-        #expect(FormData.parse("name=Test&") == .dictionary(["name": .value("Test")]))
+        #expect(HTML.Form.Coder.Nested.Data.parse("name=Test&") == .dictionary(["name": .value("Test")]))
     }
 
     @Test
     func `Leading ampersand emits no spurious pair`() {
-        let pairs = FormData.extractPairs(from: "&name=Test")
+        let pairs = HTML.Form.Coder.Nested.Data.extractPairs(from: "&name=Test")
         #expect(pairs.count == 1)
         #expect(pairs[0].0 == "name")
         #expect(pairs[0].1 == "Test")
 
-        #expect(FormData.parse("&name=Test") == .dictionary(["name": .value("Test")]))
+        #expect(HTML.Form.Coder.Nested.Data.parse("&name=Test") == .dictionary(["name": .value("Test")]))
     }
 
     @Test
     func `Doubled ampersand emits no spurious pair`() {
-        let pairs = FormData.extractPairs(from: "a=1&&b=2")
+        let pairs = HTML.Form.Coder.Nested.Data.extractPairs(from: "a=1&&b=2")
         #expect(pairs.count == 2)
         #expect(pairs[0].0 == "a")
         #expect(pairs[0].1 == "1")
         #expect(pairs[1].0 == "b")
         #expect(pairs[1].1 == "2")
 
-        #expect(FormData.parse("a=1&&b=2") == .dictionary(["a": .value("1"), "b": .value("2")]))
+        #expect(HTML.Form.Coder.Nested.Data.parse("a=1&&b=2") == .dictionary(["a": .value("1"), "b": .value("2")]))
     }
 
     @Test
     func `Empty query yields no pairs`() {
-        #expect(FormData.extractPairs(from: "").isEmpty)
-        #expect(FormData.parse("") == .dictionary([:]))
+        #expect(HTML.Form.Coder.Nested.Data.extractPairs(from: "").isEmpty)
+        #expect(HTML.Form.Coder.Nested.Data.parse("") == .dictionary([:]))
     }
 
     @Test
@@ -172,11 +172,11 @@ extension `FormData Parser Tests`.Unit {
         // the old `.split(separator: "=", omittingEmptySubsequences: false)`
         // did. The empty key maps to an empty path, so `parse` reduces to
         // `.value("x")` — long-standing pre-4ecf84e behavior, left unchanged.
-        let pairs = FormData.extractPairs(from: "=x")
+        let pairs = HTML.Form.Coder.Nested.Data.extractPairs(from: "=x")
         #expect(pairs.count == 1)
         #expect(pairs[0].0.isEmpty)
         #expect(pairs[0].1 == "x")
 
-        #expect(FormData.parse("=x") == .value("x"))
+        #expect(HTML.Form.Coder.Nested.Data.parse("=x") == .value("x"))
     }
 }

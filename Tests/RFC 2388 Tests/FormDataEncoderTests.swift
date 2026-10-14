@@ -19,7 +19,7 @@ struct `FormData Encoder Tests` {
 extension `FormData Encoder Tests`.Unit {
     @Test
     func `Encode simple values`() {
-        let data = FormData.dictionary([
+        let data = HTML.Form.Coder.Nested.Data.dictionary([
             "name": .value("John"),
             "age": .value("30"),
         ])
@@ -33,7 +33,7 @@ extension `FormData Encoder Tests`.Unit {
 
     @Test
     func `Encode arrays with brackets strategy`() {
-        let data = FormData.dictionary([
+        let data = HTML.Form.Coder.Nested.Data.dictionary([
             "tags": .array([.value("swift"), .value("vapor")])
         ])
 
@@ -44,7 +44,7 @@ extension `FormData Encoder Tests`.Unit {
 
     @Test
     func `Encode arrays with indices`() {
-        let data = FormData.dictionary([
+        let data = HTML.Form.Coder.Nested.Data.dictionary([
             "items": .array([.value("first"), .value("second")])
         ])
 
@@ -55,7 +55,7 @@ extension `FormData Encoder Tests`.Unit {
 
     @Test
     func `Encode with accumulate values strategy`() {
-        let data = FormData.dictionary([
+        let data = HTML.Form.Coder.Nested.Data.dictionary([
             "color": .array([.value("red"), .value("blue")])
         ])
 
@@ -66,7 +66,7 @@ extension `FormData Encoder Tests`.Unit {
 
     @Test
     func `Encode nested objects`() {
-        let data = FormData.dictionary([
+        let data = HTML.Form.Coder.Nested.Data.dictionary([
             "user": .dictionary([
                 "name": .value("John"),
                 "email": .value("john@example.com"),
@@ -82,11 +82,11 @@ extension `FormData Encoder Tests`.Unit {
     @Test
     func `Round-trip parsing and encoding`() {
         let original = "name=John&tags[]=swift&tags[]=vapor"
-        let parsed = FormData.parse(original, strategy: .brackets)
+        let parsed = HTML.Form.Coder.Nested.Data.parse(original, strategy: .brackets)
         let encoded = parsed.encode(strategy: .brackets, percentEncode: false)
 
         // Parse again to compare structure
-        let reparsed = FormData.parse(encoded, strategy: .brackets)
+        let reparsed = HTML.Form.Coder.Nested.Data.parse(encoded, strategy: .brackets)
 
         #expect(parsed == reparsed)
     }
